@@ -20,6 +20,7 @@ const CONNECTION_STRING = process.env.CONNECTION_STRING; //MongoClient.connect(C
 const API_TOKEN = process.env.STOCK_TOKEN;
 //console.log(API_TOKEN);
 const STOCK_URL='https://cloud.iexapis.com/stable/stock/';
+const project = "stockprice"
 
 module.exports = function (app) {
 
@@ -43,11 +44,41 @@ module.exports = function (app) {
       .catch(error=>{
         console.log(error)
       });
-
-
-      //let stockmyStockData = await fetchStockData();
-      //res.send(fetchStockData.json());
       console.log('Data: ' + JSON.stringify(stockData));
+
+      try {
+        MongoClient.connect(CONNECTION_STRING, (err, db) => {
+          if(err) {
+            console.log("Database error: " + err);
+          }
+          console.log("Successful database connection");
+
+          var submitStockPromise = () => {
+            return new Promise((resolve, reject) => {
+              db.collection(project).findAndModify({
+                query: {stock: stockData.stock},
+                update: { $set: {price: stockData.price, stock: stockData}},
+                upsert: true
+              }, (err, res) => {
+                if(err) {
+                  reject(err);
+                }
+                else {
+                  console.log('stock price created');
+                  resolve(res);
+                }
+              });
+
+            });
+          };
+
+        });
+      }
+      catch(e) {
+
+      }
+
+      
     });
     
 };
