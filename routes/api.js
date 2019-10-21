@@ -26,7 +26,7 @@ module.exports = function (app) {
 
   app.route('/api/stock-prices')
     .get(function (req, res){
-      let stockSticker = req.query;
+      let stockSticker = req.query.stock;
       let stockData;
       console.log('stock: ' + JSON.stringify(stockSticker) + 'type: ' + typeof(stockSticker));
 
@@ -61,6 +61,7 @@ module.exports = function (app) {
                 upsert: true
               }, (err, res) => {
                 if(err) {
+                  console.log('here at error');
                   reject(err);
                 }
                 else {
@@ -68,14 +69,18 @@ module.exports = function (app) {
                   resolve(res);
                 }
               });
-
             });
           };
+
+          submitStockPromise.then(submit => {
+            db.close();
+            res.send(submit);
+          });
 
         });
       }
       catch(e) {
-
+        console.log(e);
       }
 
       
