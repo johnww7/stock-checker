@@ -16,7 +16,7 @@ var fetch = require('node-fetch');
 
 
 const CONNECTION_STRING = process.env.CONNECTION_STRING; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
-//const CONNECTION_STRING = "mongodb://john:N1teLockon@ds035787.mlab.com:35787/jwfccmongodb";
+
 const API_TOKEN = process.env.STOCK_TOKEN;
 //console.log(API_TOKEN);
 const STOCK_URL='https://cloud.iexapis.com/stable/stock/';
@@ -53,13 +53,14 @@ module.exports = function (app) {
           }
           console.log("Successful database connection");
 
-          var submitStockPromise = () => {
+          let submitStockPromise = () => {
             return new Promise((resolve, reject) => {
               db.collection(project).findAndModify({
                 query: {stock: stockData.stock},
-                update: { $set: {price: stockData.price, stock: stockData}},
-                upsert: true
-              }, (err, res) => {
+                update: { $set: {price: stockData.price}},
+                upsert: true,
+                new: true
+              }, (res, err) => {
                 if(err) {
                   console.log('here at error');
                   reject(err);
@@ -72,9 +73,14 @@ module.exports = function (app) {
             });
           };
 
-          submitStockPromise.then(submit => {
+          /*let submitStockResult = async () => {
+            let result = await submitStockPromise();
+            return result;
+          };*/
+
+          submitStockPromise().then(submit => {
             db.close();
-            res.send(submit);
+            res.json(submit);
           });
 
         });
