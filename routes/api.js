@@ -55,12 +55,11 @@ module.exports = function (app) {
 
           let submitStockPromise = () => {
             return new Promise((resolve, reject) => {
-              db.collection(project).findAndModify({
-                query: {stock: stockData.stock},
-                update: { $set: {price: stockData.price}},
-                upsert: true,
-                new: true
-              }, (res, err) => {
+              db.collection(project).findOneAndUpdate(
+                {stock: stockData.stock},
+                {$set: {price: stockData.price}},
+                {upsert: true, returnOriginal: false},
+                 (res, err) => {
                 if(err) {
                   console.log('here at error');
                   reject(err);
@@ -73,12 +72,12 @@ module.exports = function (app) {
             });
           };
 
-          /*let submitStockResult = async () => {
+          let submitStockResult = async () => {
             let result = await submitStockPromise();
             return result;
-          };*/
+          };
 
-          submitStockPromise().then(submit => {
+          submitStockResult().then(submit => {
             db.close();
             res.json(submit);
           });
@@ -86,7 +85,7 @@ module.exports = function (app) {
         });
       }
       catch(e) {
-        console.log(e);
+        res.send(e);
       }
 
       
