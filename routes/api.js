@@ -14,6 +14,7 @@ var MongoClient = require('mongodb');
 var ObjectId = require("mongodb").ObjectId;
 var fetch = require('node-fetch');
 
+var apiFetch = require('../controller/apifetch');
 
 const CONNECTION_STRING = process.env.CONNECTION_STRING; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
 
@@ -33,8 +34,15 @@ module.exports = function (app) {
       let stockQuoteUrl = STOCK_URL + stockSticker + '/quote?token=' + API_TOKEN;
       console.log('Url Quote: ' + stockQuoteUrl);
 
-      let fetchStockData = fetch(stockQuoteUrl);
-      fetchStockData.then(data=>{
+      let fetchStock = apiFetch.fetchStockData(stockQuoteUrl);
+      fetchStock.then(data => {
+        stockData = JSON.stringify(data);
+        console.log('Stock data: ' + JSON.stringify(data));
+      })
+      .catch(err => {
+        console.log('An error occured: ' + err);
+      });
+      /*fetchStockData.then(data=>{
         return(data.json())
       })
       .then(result=>{
@@ -43,10 +51,10 @@ module.exports = function (app) {
       })
       .catch(error=>{
         console.log(error)
-      });
-      console.log('Data: ' + JSON.stringify(stockData));
+      });*/
+      console.log('Data: ' + JSON.stringify(fetchStock));
 
-      try {
+      /*try {
         MongoClient.connect(CONNECTION_STRING, (err, db) => {
           if(err) {
             console.log("Database error: " + err);
@@ -86,7 +94,7 @@ module.exports = function (app) {
       }
       catch(e) {
         res.send(e);
-      }
+      }*/
 
       
     });
