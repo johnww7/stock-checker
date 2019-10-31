@@ -21,7 +21,7 @@ const CONNECTION_STRING = process.env.CONNECTION_STRING; //MongoClient.connect(C
 const API_TOKEN = process.env.STOCK_TOKEN;
 //console.log(API_TOKEN);
 const STOCK_URL='https://cloud.iexapis.com/stable/stock/';
-const project = "stockprice"
+const project = "stockprice";
 
 module.exports = function (app) {
 
