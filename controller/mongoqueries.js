@@ -11,7 +11,7 @@ async function connectDB() {
         client = await MongoClient.connect(process.env.CONNECTION_STRING);
     }
     return {
-        db: client.db(project),
+        db: client.db(),
         client: client
     }
 }
@@ -25,5 +25,11 @@ async function close() {
 
 async function findStock(searchData) {
     const {db, client} = await connectDB();
+
+    let findStockDoc = await db.collection(project).find(searchData);
+    return findStockDoc;
+}
+
+async function updateStock(updateData) {
     
 }
