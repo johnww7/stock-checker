@@ -15,6 +15,7 @@ var ObjectId = require("mongodb").ObjectId;
 var fetch = require('node-fetch');
 
 var apiFetch = require('../controller/apifetch');
+var queryDB = require('../controller/mongoqueries');
 
 const CONNECTION_STRING = process.env.CONNECTION_STRING; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
 
@@ -35,12 +36,18 @@ module.exports = function (app) {
       console.log('Url Quote: ' + stockQuoteUrl);
 
       let fetchStock = apiFetch.fetchStockData(stockQuoteUrl);
-      fetchStock.then(data => {
-        stockData = JSON.stringify(data);
+      let fetchApiData = fetchStock.then(data => {
+        stockData = data;
         console.log('Stock data: ' + JSON.stringify(data));
+        return data;
+      })
+      .then(data => {
+        let findResult = queryDB.findStock(data.stock);
+        console.log('Result of find: ' + findResult);
       })
       .catch(err => {
         console.log('An error occured: ' + err);
+        return err;
       });
       /*fetchStockData.then(data=>{
         return(data.json())
@@ -52,7 +59,7 @@ module.exports = function (app) {
       .catch(error=>{
         console.log(error)
       });*/
-      console.log('Data: ' + JSON.stringify(fetchStock));
+      console.log('Data: ' + fetchApiData);
 
       /*try {
         MongoClient.connect(CONNECTION_STRING, (err, db) => {

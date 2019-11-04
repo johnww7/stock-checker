@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 var MongoClient = require('mongodb');
 var ObjectId = require("mongodb").ObjectId;
 
@@ -8,10 +10,10 @@ var client;
 
 async function connectDB() {
     if(!client) {
-        client = await MongoClient.connect(process.env.CONNECTION_STRING);
+        client = await MongoClient.connect(process.env.CONNECTION_STRING), { useNewUrlParser: true };
     }
     return {
-        db: client.db(),
+        db: client.db('jwfccmongodb'),
         client: client
     }
 }
@@ -26,10 +28,15 @@ async function close() {
 async function findStock(searchData) {
     const {db, client} = await connectDB();
 
-    let findStockDoc = await db.collection(project).find(searchData);
+    let findStockDoc = await db.collection(project).findOne({stock:searchData});
     return findStockDoc;
 }
 
 async function updateStock(updateData) {
-    
+    const {db, client} = await connectDB();
+    let updateResult = await db.collection(project).updateOne({stock: updateData.stock},
+        { $set: {price: updateData.price}});
+    return updateResult;
 }
+
+module.exports = {connectDB, close, findStock, updateStock};
