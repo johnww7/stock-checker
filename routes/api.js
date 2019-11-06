@@ -36,7 +36,10 @@ module.exports = function (app) {
       console.log('Url Quote: ' + stockQuoteUrl);
 
       let fetchStock = apiFetch.fetchStockData(stockQuoteUrl);
-      let fetchApiData = fetchStock.then(data => {
+      console.log('API stock result: ' + JSON.stringify(fetchStock));
+      let findStockData = queryDB.findStock(fetchStock.stock);
+      console.log('Stock status: ' + JSON.stringify(findStockData));
+      /*let fetchApiData = fetchStock.then(data => {
         stockData = data;
         console.log('Stock data: ' + JSON.stringify(data));
         return data;
@@ -48,7 +51,7 @@ module.exports = function (app) {
       .catch(err => {
         console.log('An error occured: ' + err);
         return err;
-      });
+      });*/
       /*fetchStockData.then(data=>{
         return(data.json())
       })
@@ -59,7 +62,7 @@ module.exports = function (app) {
       .catch(error=>{
         console.log(error)
       });*/
-      console.log('Data: ' + fetchApiData);
+      //console.log('Data: ' + fetchApiData);
 
       /*try {
         MongoClient.connect(CONNECTION_STRING, (err, db) => {

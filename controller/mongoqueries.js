@@ -28,7 +28,7 @@ async function close() {
 async function findStock(searchData) {
     const {db, client} = await connectDB();
 
-    let findStockDoc = await db.collection(project).findOne({stock:searchData});
+    let findStockDoc = await db.collection(project).findOne({stock: searchData});
     return findStockDoc;
 }
 
