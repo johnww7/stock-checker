@@ -39,4 +39,28 @@ async function updateStock(updateData) {
     return updateResult;
 }
 
+async function insertStock(data) {
+    const {db, client} = await connectDB();
+    let insertStock = await db.collection(project).insertOne(data);
+    return insertStock;
+}
+
+async function findAndUpdateStock(stockData) {
+    try {
+        let stockFindResult = await findStock(stockData.stock);
+        if(stockFindResult.stock !== null) {
+            let updateStockData = await updateStock(stockData);
+            return updateStockData;
+        }
+        else {
+            let insertStockData = await insertStock(stockData);
+            return(stockData);
+        }
+    }
+    catch(e) {
+        console.log("An error has occured: " + e);
+        return e;
+    }
+}
+
 module.exports = {connectDB, close, findStock, updateStock};
