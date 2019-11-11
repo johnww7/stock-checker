@@ -35,10 +35,13 @@ module.exports = function (app) {
       let stockQuoteUrl = STOCK_URL + stockSticker + '/quote?token=' + API_TOKEN;
       console.log('Url Quote: ' + stockQuoteUrl);
 
-      let fetchStock = apiFetch.fetchStockData(stockQuoteUrl);
-      console.log('API stock result: ' + JSON.stringify(fetchStock));
-      let findStockData = queryDB.findStock(fetchStock.stock);
-      console.log('Stock status: ' + JSON.stringify(findStockData));
+      let fetchStock = apiFetch.fetchStockData(stockQuoteUrl).then(data =>{console.log(data)})
+      .catch(err => {console.log(err)});
+      console.log('API stock result: ' + apiFetch.fetchStockData(stockQuoteUrl));
+      //let findStockData = queryDB.findStock(fetchStock.stock);
+     // console.log('Stock status: ' + JSON.stringify(findStockData));
+     
+     
       /*let fetchApiData = fetchStock.then(data => {
         stockData = data;
         console.log('Stock data: ' + JSON.stringify(data));

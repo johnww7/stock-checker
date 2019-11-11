@@ -11,12 +11,12 @@ async function fetchStockData(quoteUrl) {
         throw new Error(result.status);
     }
 
-    let fetchStockData = await result.json();
+    //let fetchStockData = JSON.stringify(result);
     let returnData = {
-        stock: fetchStockData.symbol,
-        price: fetchStockData.latestPrice
+        stock: result.symbol,
+        price: result.latestPrice
     };
-    return returnData;
+    return result;
     /*fetchStockData.then(data=>{
         return(data.json())
       })
