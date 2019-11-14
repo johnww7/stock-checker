@@ -36,7 +36,49 @@ module.exports = function (app) {
       let stockQuoteUrl = STOCK_URL + stockSticker + '/quote?token=' + API_TOKEN;
       console.log('Url Quote: ' + stockQuoteUrl);
 
-      let fetchStock = apiFetch.fetchStockData(stockQuoteUrl).then(data =>{
+      try {
+        MongoClient.connect(CONNECTION_STRING, (err, client) => {
+          if(err) {
+            console.log("Database error: " + err);
+          }
+          console.log("Successful database connection");
+          const db = client.db(project);
+
+          var myStockPromise = () =>{
+            return new Promise((resolve, reject) => {
+              apiFetch.fetchStockData(stockQuoteUrl).then(data =>{
+                console.log("Response data: " + JSON.stringify(data));
+        
+                let likeValue = like ? true : false;
+                let formattedData = {
+                  stock: data.symbol,
+                  price: data.latestPrice,
+                  likeVal: likeValue
+                }
+                return formattedData;
+              })
+              .then(data => {
+                console.log('formattted: ' + JSON.stringify(data));
+                resolve(data);
+              })
+              .catch(err => {
+                console.log(err)
+                reject(err);
+              });
+            });
+          };
+
+          myStockPromise().then(result => {
+            db.close();
+            console.log('Result so far: ' + JSON.stringify(result));
+          });
+        
+        });
+      }
+      catch (e) {
+        console.log('End of error: ' + e);
+      }
+      /*let fetchStock = apiFetch.fetchStockData(stockQuoteUrl).then(data =>{
         console.log("Response data: " + JSON.stringify(data));
 
         let likeValue = like ? true : false;
@@ -50,7 +92,7 @@ module.exports = function (app) {
       .then(data => {
         console.log('formattted: ' + JSON.stringify(data));
       })
-      .catch(err => {console.log(err)});
+      .catch(err => {console.log(err)});*/
       
       
       //console.log('API stock result: ' + apiFetch.fetchStockData(stockQuoteUrl));

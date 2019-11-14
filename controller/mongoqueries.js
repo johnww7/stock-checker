@@ -25,35 +25,55 @@ async function close() {
     client = undefined;
 }
 
-async function findStock(searchData) {
+async function findStock(db, searchData) {
     //const {db, client} = await connectDB();
 
     return db.collection(project).findOne({stock: searchData});
     //return findStockDoc;
 }
 
-async function updateStock(updateData) {
+async function updateStock(db, updateData) {
     //const {db, client} = await connectDB();
-    return db.collection(project).updateOne({stock: updateData.stock},
-        { $set: {price: updateData.price}});
+    if(likeVal) {
+        return db.collection(project).updateOne({stock: updateData.stock},
+            { $set: {price: updateData.price}, $inc: {likes: 1}});
+    }
+    else {
+        return db.collection(project).updateOne({stock: updateData.stock},
+            { $set: {price: updateData.price}});
+    }
+    
     //return updateResult;
 }
 
-async function insertStock(data) {
+async function insertStock(db, data) {
     //const {db, client} = await connectDB();
-    return db.collection(project).insertOne(data);
+    if(likeVal) {
+        return db.collection(project).insertOne({
+            stock: data.stock,
+            price: data.price,
+            likes: 1 
+        });
+    }
+    else {
+        return db.collection(project).insertOne({
+            stock: data.stock,
+            price: data.price,
+            likes: 0
+        });
+    }
     //return insertStock;
 }
 
-async function findAndUpdateStock(stockData) {
+async function findAndUpdateStock(db, stockData) {
     try {
-        let stockFindResult = await findStock(stockData.stock);
+        let stockFindResult = await findStock(db, stockData.stock);
         if(stockFindResult.stock !== null) {
-            let updateStockData = await updateStock(stockData);
+            let updateStockData = await updateStock(db, stockData);
             return updateStockData;
         }
         else {
-            let insertStockData = await insertStock(stockData);
+            let insertStockData = await insertStock(db, stockData);
             return stockData;
         }
     }
@@ -63,4 +83,4 @@ async function findAndUpdateStock(stockData) {
     }
 }
 
-module.exports = {connectDB, close, findStock, updateStock};
+module.exports = {connectDB, close, findStock, updateStock, findAndUpdateStock};
