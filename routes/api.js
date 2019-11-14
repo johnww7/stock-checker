@@ -29,15 +29,31 @@ module.exports = function (app) {
   app.route('/api/stock-prices')
     .get(function (req, res){
       let stockSticker = req.query.stock;
+      let like = req.query.like;
       let stockData;
-      console.log('stock: ' + JSON.stringify(stockSticker) + 'type: ' + typeof(stockSticker));
+      console.log('stock: ' + JSON.stringify(stockSticker) + ' like value: ' + like);
 
       let stockQuoteUrl = STOCK_URL + stockSticker + '/quote?token=' + API_TOKEN;
       console.log('Url Quote: ' + stockQuoteUrl);
 
-      let fetchStock = apiFetch.fetchStockData(stockQuoteUrl).then(data =>{console.log(data)})
+      let fetchStock = apiFetch.fetchStockData(stockQuoteUrl).then(data =>{
+        console.log("Response data: " + JSON.stringify(data));
+
+        let likeValue = like ? true : false;
+        let formattedData = {
+          stock: data.symbol,
+          price: data.latestPrice,
+          likeVal: likeValue
+        }
+        return formattedData;
+      })
+      .then(data => {
+        console.log('formattted: ' + JSON.stringify(data));
+      })
       .catch(err => {console.log(err)});
-      console.log('API stock result: ' + apiFetch.fetchStockData(stockQuoteUrl));
+      
+      
+      //console.log('API stock result: ' + apiFetch.fetchStockData(stockQuoteUrl));
       //let findStockData = queryDB.findStock(fetchStock.stock);
      // console.log('Stock status: ' + JSON.stringify(findStockData));
      

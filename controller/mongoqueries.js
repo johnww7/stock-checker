@@ -28,21 +28,21 @@ async function close() {
 async function findStock(searchData) {
     //const {db, client} = await connectDB();
 
-    let findStockDoc = await db.collection(project).findOne({stock: searchData});
-    return findStockDoc;
+    return db.collection(project).findOne({stock: searchData});
+    //return findStockDoc;
 }
 
 async function updateStock(updateData) {
     //const {db, client} = await connectDB();
-    let updateResult = await db.collection(project).updateOne({stock: updateData.stock},
+    return db.collection(project).updateOne({stock: updateData.stock},
         { $set: {price: updateData.price}});
-    return updateResult;
+    //return updateResult;
 }
 
 async function insertStock(data) {
     //const {db, client} = await connectDB();
-    let insertStock = await db.collection(project).insertOne(data);
-    return insertStock;
+    return db.collection(project).insertOne(data);
+    //return insertStock;
 }
 
 async function findAndUpdateStock(stockData) {
@@ -54,7 +54,7 @@ async function findAndUpdateStock(stockData) {
         }
         else {
             let insertStockData = await insertStock(stockData);
-            return(stockData);
+            return stockData;
         }
     }
     catch(e) {
