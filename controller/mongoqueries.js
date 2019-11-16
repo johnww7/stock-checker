@@ -28,7 +28,7 @@ async function close() {
 async function findStock(db, searchData) {
     //const {db, client} = await connectDB();
 
-    return db.collection(project).findOne({stock: searchData});
+    return db.collection(project).findOne({stock: searchData.stock});
     //return findStockDoc;
 }
 
@@ -67,13 +67,16 @@ async function insertStock(db, data) {
 
 async function findAndUpdateStock(db, stockData) {
     try {
-        let stockFindResult = await findStock(db, stockData.stock);
+        let stockFindResult = await findStock(db, stockData);
+        console.log('Query finding stock in db: ' + JSON.stringify(stockFindResult));
         if(stockFindResult.stock !== null) {
             let updateStockData = await updateStock(db, stockData);
+            console.log('Query update Stock: ' + updateStockData);
             return updateStockData;
         }
         else {
             let insertStockData = await insertStock(db, stockData);
+            console.log('Query insert stock: ' + insertStockData);
             return stockData;
         }
     }
