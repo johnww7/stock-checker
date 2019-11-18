@@ -8,7 +8,7 @@ const project = "stockprice";
 
 var client;
 
-async function connectDB() {
+/*async function connectDB() {
     if(!client) {
         client = await MongoClient.connect(process.env.CONNECTION_STRING), { useNewUrlParser: true };
     }
@@ -23,7 +23,7 @@ async function close() {
         client.close();
     }
     client = undefined;
-}
+}*/
 
 async function findStock(db, searchData) {
     //const {db, client} = await connectDB();
@@ -67,6 +67,7 @@ async function insertStock(db, data) {
 
 async function findAndUpdateStock(db, stockData) {
     try {
+        console.log("Whats in stockData before find: " + db);
         let stockFindResult = await findStock(db, stockData);
         console.log('Query finding stock in db: ' + JSON.stringify(stockFindResult));
         if(stockFindResult.stock !== null) {
@@ -86,4 +87,4 @@ async function findAndUpdateStock(db, stockData) {
     }
 }
 
-module.exports = {connectDB, close, findStock, updateStock, findAndUpdateStock};
+module.exports = {findStock, updateStock, findAndUpdateStock};

@@ -17,7 +17,8 @@ var fetch = require('node-fetch');
 var apiFetch = require('../controller/apifetch');
 var queryDB = require('../controller/mongoqueries');
 
-const CONNECTION_STRING = process.env.CONNECTION_STRING; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
+//const CONNECTION_STRING = process.env.CONNECTION_STRING; //MongoClient.connect(CONNECTION_STRING, function(err, db) {});
+const CONNECTION_STRING = "mongodb://john:N1teLockon@ds035787.mlab.com:35787/jwfccmongodb";
 
 const API_TOKEN = process.env.STOCK_TOKEN;
 //console.log(API_TOKEN);
