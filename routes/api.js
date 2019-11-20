@@ -43,7 +43,7 @@ module.exports = function (app) {
             console.log("Database error: " + err);
           }
           console.log("Successful database connection");
-          const db = client.db(project);
+          const db = client.collection(project);
 
           var myStockPromise = () =>{
             return new Promise((resolve, reject) => {
@@ -73,7 +73,7 @@ module.exports = function (app) {
           };
 
           myStockPromise().then(result => {
-            db.close();
+            client.close();
             console.log('Result so far: ' + JSON.stringify(result));
           });
         

@@ -28,18 +28,18 @@ async function close() {
 async function findStock(db, searchData) {
     //const {db, client} = await connectDB();
 
-    return db.collection(project).findOne({stock: searchData.stock});
+    return db.findOne({stock: searchData.stock});
     //return findStockDoc;
 }
 
 async function updateStock(db, updateData) {
     //const {db, client} = await connectDB();
     if(likeVal) {
-        return db.collection(project).updateOne({stock: updateData.stock},
+        return db.updateOne({stock: updateData.stock},
             { $set: {price: updateData.price}, $inc: {likes: 1}});
     }
     else {
-        return db.collection(project).updateOne({stock: updateData.stock},
+        return db.updateOne({stock: updateData.stock},
             { $set: {price: updateData.price}});
     }
     
@@ -48,15 +48,15 @@ async function updateStock(db, updateData) {
 
 async function insertStock(db, data) {
     //const {db, client} = await connectDB();
-    if(likeVal) {
-        return db.collection(project).insertOne({
+    if(data.likeVal) {
+        return db.insertOne({
             stock: data.stock,
             price: data.price,
             likes: 1 
         });
     }
     else {
-        return db.collection(project).insertOne({
+        return db.insertOne({
             stock: data.stock,
             price: data.price,
             likes: 0
@@ -67,18 +67,19 @@ async function insertStock(db, data) {
 
 async function findAndUpdateStock(db, stockData) {
     try {
-        console.log("Whats in stockData before find: " + db);
+        console.log("Whats in stockData before find: " + JSON.stringify(stockData));
         let stockFindResult = await findStock(db, stockData);
         console.log('Query finding stock in db: ' + JSON.stringify(stockFindResult));
-        if(stockFindResult.stock !== null) {
-            let updateStockData = await updateStock(db, stockData);
-            console.log('Query update Stock: ' + updateStockData);
-            return updateStockData;
-        }
-        else {
+        
+        if(stockFindResult === null) {
             let insertStockData = await insertStock(db, stockData);
             console.log('Query insert stock: ' + insertStockData);
             return stockData;
+        }
+        else {
+            let updateStockData = await updateStock(db, stockData);
+            console.log('Query update Stock: ' + updateStockData);
+            return updateStockData;
         }
     }
     catch(e) {
