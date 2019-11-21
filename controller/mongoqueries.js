@@ -28,13 +28,13 @@ async function close() {
 async function findStock(db, searchData) {
     //const {db, client} = await connectDB();
 
-    return db.findOne({stock: searchData.stock});
+    return db.findOne({stock: searchData.stock},{_id: 0, stock: 1, price: 1, likes: 1});
     //return findStockDoc;
 }
 
 async function updateStock(db, updateData) {
     //const {db, client} = await connectDB();
-    if(likeVal) {
+    if(updateData.likeVal === true) {
         return db.updateOne({stock: updateData.stock},
             { $set: {price: updateData.price}, $inc: {likes: 1}});
     }
@@ -74,12 +74,14 @@ async function findAndUpdateStock(db, stockData) {
         if(stockFindResult === null) {
             let insertStockData = await insertStock(db, stockData);
             console.log('Query insert stock: ' + insertStockData);
-            return stockData;
+            let findInsertedData = await findStock(db, stockData)
+            return findInsertedData;
         }
         else {
             let updateStockData = await updateStock(db, stockData);
             console.log('Query update Stock: ' + updateStockData);
-            return updateStockData;
+            let findUpdatedData = await findStock(db, stockData);
+            return findUpdatedData;
         }
     }
     catch(e) {

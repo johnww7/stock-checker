@@ -61,9 +61,9 @@ module.exports = function (app) {
               .then(stockResult => {
                 return queryDB.findAndUpdateStock(db, stockResult);
               })
-              .then(data => {
-                console.log('formattted: ' + JSON.stringify(data));
-                resolve(data);
+              .then(resultData=> {
+                console.log('formattted: ' + JSON.stringify(resultData));
+                resolve(resultData);
               })
               .catch(err => {
                 console.log(err)
