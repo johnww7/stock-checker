@@ -18,16 +18,18 @@ async function fetchStockData(quoteUrl) {
         price: result.latestPrice
     };*/
     return returnData;
-    /*fetch(quoteUrl).then(data=>{
-        return(data.json())
-      })
-      .then(result=>{
-        stockData = ({stock: result.symbol, price: result.latestPrice});
-        console.log('Data: ' + JSON.stringify(stockData));
-      })
-      .catch(error=>{
-        console.log(error)
-      });*/
 }
 
-module.exports = {fetchStockData};
+async function fetchTwoStocksData(quoteUrl1, quoteUrl2) {
+  const result1 = await fetch(quoteUrl1);
+  const result2 = await fetch(quoteUrl2);
+  if(!result1 || !result2) {
+    throw new Error('Error during fetch');
+  }
+
+  let returnData1 = await result1.json();
+  let returnData2 = await result2.json();
+  return [returnData1, returnData2];
+}
+
+module.exports = {fetchStockData, fetchTwoStocksData};

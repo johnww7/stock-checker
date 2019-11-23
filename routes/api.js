@@ -75,6 +75,7 @@ module.exports = function (app) {
           myStockPromise().then(result => {
             client.close();
             console.log('Result so far: ' + JSON.stringify(result));
+            res.json({stockData: result});
           });
         
         });
