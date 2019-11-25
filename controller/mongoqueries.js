@@ -46,6 +46,11 @@ async function updateStock(db, updateData) {
     //return updateResult;
 }
 
+async function updateStockLike (db, data) {
+    return db.updateOne({stock: data.stock},
+        { $inc: {likes: 1}});
+}
+
 async function insertStock(db, data) {
     //const {db, client} = await connectDB();
     if(data.likeVal) {
@@ -85,6 +90,33 @@ async function findAndUpdateStock(db, stockData) {
         }
     }
     catch(e) {
+        console.log("An error has occured: " + e);
+        return e;
+    }
+}
+
+async function findTwoStocksAndCompare(db, twoStocks) {
+    try {
+        console.log("Both stocks: " +JSON.stringify(twoStocks));
+        let stock1FindResult = await findStock(db, twoStocks[0]);
+        let stock2FindResult = await findStock(db, twoStocks[1]);
+
+        if(stock1FindResult === null || stock2FindResult === null) {
+            let 
+        }
+        else if(twoStocks[2].likeVal === true) {
+            let stock1Update = await updateStockLike(db, twoStocks[0]);
+            let stock2Update = await updateStockLike(db, twoStocks[1]);
+
+            let find1Update = await findStock(db, twoStocks[0]);
+            let find2Update = await findStock(db, twoStocks[1]);
+            return ([find1Update, find2Update]);
+        }
+        else {
+            return ([stock1FindResult, stock2FindResult]);
+        }
+    }
+    catch (e) {
         console.log("An error has occured: " + e);
         return e;
     }
