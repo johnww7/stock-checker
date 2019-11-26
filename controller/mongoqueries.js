@@ -102,7 +102,10 @@ async function findTwoStocksAndCompare(db, twoStocks) {
         let stock2FindResult = await findStock(db, twoStocks[1]);
 
         if(stock1FindResult === null || stock2FindResult === null) {
-            let 
+            let stock1Data = await (stock1FindResult === null ? insertStock(db, twoStocks[0]) : stock1FindResult);
+            let stock2Data = await (stock2FindResult === null ? insertStock(db, twoStocks[1]) : stock2FindResult);
+          
+            return ([stock1Data, stock2Data]);
         }
         else if(twoStocks[2].likeVal === true) {
             let stock1Update = await updateStockLike(db, twoStocks[0]);
