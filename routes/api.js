@@ -34,7 +34,8 @@ module.exports = function (app) {
       let stockData;
       console.log('stock: ' + JSON.stringify(stockSticker) + ' like value: ' + like);
 
-      let stockQuoteUrl = STOCK_URL + stockSticker + '/quote?token=' + API_TOKEN;
+      let stockQuoteUrl = STOCK_URL + stockSticker[0] + '/quote?token=' + API_TOKEN;
+      let stockQuoteUrl2 = STOCK_URL + stockSticker[1] + '/quote?token=' + API_TOKEN;
       console.log('Url Quote: ' + stockQuoteUrl);
 
       try {
@@ -47,28 +48,60 @@ module.exports = function (app) {
 
           var myStockPromise = () =>{
             return new Promise((resolve, reject) => {
-              apiFetch.fetchStockData(stockQuoteUrl).then(data =>{
-                console.log("Response data: " + JSON.stringify(data));
-        
-                let likeValue = like ? true : false;
-                let formattedData = {
-                  stock: data.symbol,
-                  price: data.latestPrice,
-                  likeVal: likeValue
-                }
-                return formattedData;
-              })
-              .then(stockResult => {
-                return queryDB.findAndUpdateStock(db, stockResult);
-              })
-              .then(resultData=> {
-                console.log('formattted: ' + JSON.stringify(resultData));
-                resolve(resultData);
-              })
-              .catch(err => {
-                console.log(err)
-                reject(err);
-              });
+              if(stockSticker.length == 2) {
+                apiFetch.fetchTwoStocksData(stockQuoteUrl, stockQuoteUrl2).then(data =>{
+                  console.log("Response data: " + JSON.stringify(data));
+          
+                  let likeValue = like ? true : false;
+                  let formattedData1 = {
+                    stock: data[0].symbol,
+                    price: data[0].latestPrice,
+                    likeVal: likeValue
+                  }
+                  let formattedData2 = {
+                    stock: data[1].symbol,
+                    price: data[1].latestPrice,
+                    likeVal: likeValue
+                  }
+                  return [formattedData1, formattedData2, {likeVal: likeValue}];
+                })
+                .then(stockResult => {
+                  console.log('API fetch formated results: ' + JSON.stringify(stockResult));
+                  return queryDB.findTwoStocksAndCompare(db, stockResult);
+                })
+                .then(resultData=> {
+                  console.log('formattted: ' + JSON.stringify(resultData));
+                  resolve(resultData);
+                })
+                .catch(err => {
+                  console.log(err)
+                  reject(err);
+                });
+              }
+              else {
+                apiFetch.fetchStockData(stockQuoteUrl).then(data =>{
+                  console.log("Response data: " + JSON.stringify(data));
+          
+                  let likeValue = like ? true : false;
+                  let formattedData = {
+                    stock: data.symbol,
+                    price: data.latestPrice,
+                    likeVal: likeValue
+                  }
+                  return formattedData;
+                })
+                .then(stockResult => {
+                  return queryDB.findAndUpdateStock(db, stockResult);
+                })
+                .then(resultData=> {
+                  console.log('formattted: ' + JSON.stringify(resultData));
+                  resolve(resultData);
+                })
+                .catch(err => {
+                  console.log(err)
+                  reject(err);
+                });
+              }
             });
           };
 

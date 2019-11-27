@@ -127,4 +127,4 @@ async function findTwoStocksAndCompare(db, twoStocks) {
 
 
 
-module.exports = {findStock, updateStock, findAndUpdateStock};
+module.exports = {findStock, updateStock, findAndUpdateStock, findTwoStocksAndCompare};
