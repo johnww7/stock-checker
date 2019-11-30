@@ -33,11 +33,7 @@ module.exports = function (app) {
       let like = req.query.like;
       let stockData;
       console.log('stock: ' + JSON.stringify(stockSticker) + ' like value: ' + like);
-
-      let stockQuoteUrl = STOCK_URL + stockSticker[0] + '/quote?token=' + API_TOKEN;
-      let stockQuoteUrl2 = STOCK_URL + stockSticker[1] + '/quote?token=' + API_TOKEN;
-      console.log('Url Quote: ' + stockQuoteUrl);
-
+      console.log('stock type: ' + typeof(stockSticker));
       try {
         MongoClient.connect(CONNECTION_STRING, (err, client) => {
           if(err) {
@@ -48,7 +44,11 @@ module.exports = function (app) {
 
           var myStockPromise = () =>{
             return new Promise((resolve, reject) => {
-              if(stockSticker.length == 2) {
+              if(stockSticker.length == 2 && typeof(stockSticker) === 'object') {
+                let stockQuoteUrl = STOCK_URL + stockSticker[0] + '/quote?token=' + API_TOKEN;
+                let stockQuoteUrl2 = STOCK_URL + stockSticker[1] + '/quote?token=' + API_TOKEN;
+                console.log('Url Quote: ' + stockQuoteUrl + ' : ' + stockQuoteUrl2);
+
                 apiFetch.fetchTwoStocksData(stockQuoteUrl, stockQuoteUrl2).then(data =>{
                   console.log("Response data: " + JSON.stringify(data));
           
@@ -79,6 +79,8 @@ module.exports = function (app) {
                 });
               }
               else {
+                let stockQuoteUrl = STOCK_URL + stockSticker + '/quote?token=' + API_TOKEN;
+                console.log('Url Quote: ' + stockQuoteUrl);
                 apiFetch.fetchStockData(stockQuoteUrl).then(data =>{
                   console.log("Response data: " + JSON.stringify(data));
           
