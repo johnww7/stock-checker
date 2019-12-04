@@ -8,22 +8,6 @@ const project = "stockprice";
 
 var client;
 
-/*async function connectDB() {
-    if(!client) {
-        client = await MongoClient.connect(process.env.CONNECTION_STRING), { useNewUrlParser: true };
-    }
-    return {
-        db: client.db('jwfccmongodb'),
-        client: client
-    }
-}
-
-async function close() {
-    if(client) {
-        client.close();
-    }
-    client = undefined;
-}*/
 
 async function findStock(db, searchData) {
     //const {db, client} = await connectDB();
