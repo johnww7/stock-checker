@@ -12,12 +12,13 @@ var client;
 async function findStock(db, searchData) {
     //const {db, client} = await connectDB();
 
-    return db.findOne({stock: searchData.stock},{_id: 0, stock: 1, price: 1, likes: 1});
+    return db.findOne({stock: searchData.stock},{_id: 0, stock: 1, price: 1, likes: 1, ip: 1});
     //return findStockDoc;
 }
 
-async function updateStock(db, updateData) {
+async function updateStock(db, updateData, listOfIp) {
     //const {db, client} = await connectDB();
+    let 
     if(updateData.likeVal === true) {
         return db.updateOne({stock: updateData.stock},
             { $set: {price: updateData.price}, $inc: {likes: 1}});
@@ -41,14 +42,16 @@ async function insertStock(db, data) {
         return db.insertOne({
             stock: data.stock,
             price: data.price,
-            likes: 1 
+            likes: 1,
+            ip: [data.ip] 
         });
     }
     else {
         return db.insertOne({
             stock: data.stock,
             price: data.price,
-            likes: 0
+            likes: 0,
+            ip: []
         });
     }
     //return insertStock;
@@ -67,7 +70,7 @@ async function findAndUpdateStock(db, stockData) {
             return findInsertedData;
         }
         else {
-            let updateStockData = await updateStock(db, stockData);
+            let updateStockData = await updateStock(db, stockData, stockF.ip);
             console.log('Query update Stock: ' + updateStockData);
             let findUpdatedData = await findStock(db, stockData);
             return findUpdatedData;

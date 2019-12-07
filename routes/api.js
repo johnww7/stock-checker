@@ -31,6 +31,7 @@ module.exports = function (app) {
     .get(function (req, res){
       let stockSticker = req.query.stock;
       let like = req.query.like;
+      let ipAddress= req.ip;
       let stockData;
       console.log("my ip: " + req.ip)
       console.log('stock: ' + JSON.stringify(stockSticker) + ' like value: ' + like);
@@ -57,12 +58,14 @@ module.exports = function (app) {
                   let formattedData1 = {
                     stock: data[0].symbol,
                     price: data[0].latestPrice,
-                    likeVal: likeValue
+                    likeVal: likeValue,
+                    ip: [ipAddress]
                   }
                   let formattedData2 = {
                     stock: data[1].symbol,
                     price: data[1].latestPrice,
-                    likeVal: likeValue
+                    likeVal: likeValue,
+                    ip: [ipAddress]
                   }
                   return [formattedData1, formattedData2, {likeVal: likeValue}];
                 })
@@ -99,7 +102,8 @@ module.exports = function (app) {
                   let formattedData = {
                     stock: data.symbol,
                     price: data.latestPrice,
-                    likeVal: likeValue
+                    likeVal: likeValue,
+                    ip: [ipAddress]
                   }
                   return formattedData;
                 })
