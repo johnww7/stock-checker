@@ -18,10 +18,13 @@ async function findStock(db, searchData) {
 
 async function updateStock(db, updateData, listOfIp) {
     //const {db, client} = await connectDB();
+    console.log("Whats in listOfIp: " + JSON.stringify(listOfIp));
     let findIp = listOfIp.find(elem => elem === updateData.ip);
+    console.log("Whats in findIp: " + findIp);
     if(updateData.likeVal === true && findIp === undefined) {
         return db.updateOne({stock: updateData.stock},
-            { $set: {price: updateData.price}, $inc: {likes: 1}});
+            { $set: {price: updateData.price}, $inc: {likes: 1}, 
+            $addToSet: {ip: updateData.ip}});
     }
     else {
         return db.updateOne({stock: updateData.stock},
@@ -48,7 +51,7 @@ async function insertStock(db, data) {
             stock: data.stock,
             price: data.price,
             likes: 1,
-            ip: [data.ip] 
+            ip: data.ip 
         });
     }
     else {

@@ -59,13 +59,13 @@ module.exports = function (app) {
                     stock: data[0].symbol,
                     price: data[0].latestPrice,
                     likeVal: likeValue,
-                    ip: [ipAddress]
+                    ip: ipAddress
                   }
                   let formattedData2 = {
                     stock: data[1].symbol,
                     price: data[1].latestPrice,
                     likeVal: likeValue,
-                    ip: [ipAddress]
+                    ip: ipAddress
                   }
                   return [formattedData1, formattedData2, {likeVal: likeValue}];
                 })
@@ -103,7 +103,7 @@ module.exports = function (app) {
                     stock: data.symbol,
                     price: data.latestPrice,
                     likeVal: likeValue,
-                    ip: [ipAddress]
+                    ip: ipAddress
                   }
                   return formattedData;
                 })
