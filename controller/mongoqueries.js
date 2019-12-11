@@ -95,16 +95,16 @@ async function findTwoStocksAndCompare(db, twoStocks) {
         console.log("Both stocks: " +JSON.stringify(twoStocks));
         let stock1FindResult = await findStock(db, twoStocks[0]);
         let stock2FindResult = await findStock(db, twoStocks[1]);
-        let stockIP1 = stock1FindResult.ip;
-        let stockIP2 = stock2FindResult.ip;
+        
 
         if(stock1FindResult === null || stock2FindResult === null) {
+            console.log("One or both stocks not found");
             let stock1Data = await ((stock1FindResult === null) 
                 ? insertStock(db, twoStocks[0]) 
-                : (twoStocks[2].likeVal) ? updateStockLike(db, twoStocks[0], stockIP1) : stock1FindResult);
+                : (twoStocks[2].likeVal) ? updateStockLike(db, twoStocks[0], stock1FindResult.ip) : stock1FindResult);
             let stock2Data = await ((stock2FindResult === null) 
                 ? insertStock(db, twoStocks[1]) 
-                : (twoStocks[2].likeVal) ? updateStockLike(db, twostocks[1],stockIP2) : stock2FindResult);
+                : (twoStocks[2].likeVal) ? updateStockLike(db, twostocks[1],stock2FindResult.ip) : stock2FindResult);
             
 
             let stock1ReturnData = await findStock(db, twoStocks[0]);
@@ -113,6 +113,9 @@ async function findTwoStocksAndCompare(db, twoStocks) {
             return ([stock1ReturnData, stock2ReturnData]);
         }
         else if(twoStocks[2].likeVal === true) {
+            console.log("Increasing like for both stocks");
+            let stockIP1 = stock1FindResult.ip;
+            let stockIP2 = stock2FindResult.ip;
             let stock1Update = await updateStockLike(db, twoStocks[0], stockIP1);
             let stock2Update = await updateStockLike(db, twoStocks[1], stockIP2);
 

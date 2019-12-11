@@ -112,7 +112,12 @@ module.exports = function (app) {
                 })
                 .then(resultData=> {
                   console.log('formattted: ' + JSON.stringify(resultData));
-                  resolve(resultData);
+                  let formattedStockResult = {
+                    stock: resultData.stock,
+                    price: resultData.price,
+                    likes: resultData.likes
+                  };
+                  resolve(formattedStockResult);
                 })
                 .catch(err => {
                   console.log(err)
