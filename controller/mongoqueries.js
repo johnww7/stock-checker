@@ -41,7 +41,9 @@ async function updateStockLike (db, data, ipList) {
         return db.updateOne({stock: data.stock},
             { $inc: {likes: 1}});
     }
-    return;
+    else {
+        return 'No Update';
+    }
 }
 
 async function insertStock(db, data) {
@@ -116,11 +118,16 @@ async function findTwoStocksAndCompare(db, twoStocks) {
             console.log("Increasing like for both stocks");
             let stockIP1 = stock1FindResult.ip;
             let stockIP2 = stock2FindResult.ip;
+            console.log('whats in stockIp1: ' + typeof(stockIP1) + ' stockIp2: ' +stockIP2);
             let stock1Update = await updateStockLike(db, twoStocks[0], stockIP1);
+            console.log('Update contents: ' + JSON.stringify(stock1Update));
             let stock2Update = await updateStockLike(db, twoStocks[1], stockIP2);
+            console.log('Update contents: ' + JSON.stringify(stock2Update));
+
 
             let find1Update = await findStock(db, twoStocks[0]);
             let find2Update = await findStock(db, twoStocks[1]);
+            console.log('Whats in findUpdate: ' + JSON.stringify(find1Update));
             return ([find1Update, find2Update]);
         }
         else {
