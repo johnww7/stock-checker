@@ -35,14 +35,17 @@ async function updateStock(db, updateData, listOfIp) {
 }
 
 async function updateStockLike (db, data, ipList) {
-    let checkIP = ipList.find(elem => elem === data.ip);
+    console.log("Inside updateStockLike: " + JSON.stringify(data) + ' :' + ipList);
+    //let checkIP = ipList.find(elem => elem === data.ip);
     
-    if(checkIP === undefined) {
+    if(ipList === null || Object.keys(ipList).length === 0) {
         return db.updateOne({stock: data.stock},
             { $inc: {likes: 1}});
     }
     else {
-        return 'No Update';
+        //return 'No Update';
+        return db.updateOne({stock: data.stock},
+            { $inc: {likes: 0}});
     }
 }
 
@@ -118,7 +121,7 @@ async function findTwoStocksAndCompare(db, twoStocks) {
             console.log("Increasing like for both stocks");
             let stockIP1 = stock1FindResult.ip;
             let stockIP2 = stock2FindResult.ip;
-            console.log('whats in stockIp1: ' + typeof(stockIP1) + ' stockIp2: ' +stockIP2);
+            console.log('whats in stockIp1: ' + typeof(stockIP1) + ' stockIp2: ' + stockIP1);
             let stock1Update = await updateStockLike(db, twoStocks[0], stockIP1);
             console.log('Update contents: ' + JSON.stringify(stock1Update));
             let stock2Update = await updateStockLike(db, twoStocks[1], stockIP2);
