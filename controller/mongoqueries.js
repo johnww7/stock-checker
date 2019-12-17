@@ -40,12 +40,12 @@ async function updateStockLike (db, data, ipList) {
     
     if(ipList === null || Object.keys(ipList).length === 0) {
         return db.updateOne({stock: data.stock},
-            { $inc: {likes: 1}});
+            { $inc: {likes: 1}, $addToSet:{ip: data.ip}});
     }
     else {
-        //return 'No Update';
-        return db.updateOne({stock: data.stock},
-            { $inc: {likes: 0}});
+        return 'No Update';
+        /*return db.updateOne({stock: data.stock},
+            { $inc: {likes: 0}});*/
     }
 }
 
