@@ -18,7 +18,7 @@ async function findStock(db, searchData) {
 
 async function updateStock(db, updateData, listOfIp) {
     //const {db, client} = await connectDB();
-    console.log("Whats in listOfIp: " + JSON.stringify(listOfIp));
+    console.log("Whats in listOfIp: " + JSON.stringify(listOfIp) + 'type: ' +typeof(listOfIp));
     let findIp = listOfIp.find(elem => elem === updateData.ip);
     console.log("Whats in findIp: " + findIp);
     if(updateData.likeVal === true && findIp === undefined) {
@@ -83,7 +83,7 @@ async function findAndUpdateStock(db, stockData) {
             return findInsertedData;
         }
         else {
-            let updateStockData = await updateStock(db, stockData, stockFindResult.ip);
+            let updateStockData = await updateStock(db, stockData, [stockFindResult.ip]);
             console.log('Query update Stock: ' + updateStockData);
             let findUpdatedData = await findStock(db, stockData);
             return findUpdatedData;
