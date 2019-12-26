@@ -10,17 +10,13 @@ var client;
 
 
 async function findStock(db, searchData) {
-    //const {db, client} = await connectDB();
 
     return db.findOne({stock: searchData.stock},{_id: 0, stock: 1, price: 1, likes: 1, ip: 1});
-    //return findStockDoc;
 }
 
 async function updateStock(db, updateData, listOfIp) {
-    //const {db, client} = await connectDB();
-    console.log("Whats in listOfIp: " + JSON.stringify(listOfIp) + 'type: ' +typeof(listOfIp));
     let findIp = listOfIp.find(elem => elem === updateData.ip);
-    console.log("Whats in findIp: " + findIp);
+
     if(updateData.likeVal === true && findIp === undefined) {
         return db.updateOne({stock: updateData.stock},
             { $set: {price: updateData.price}, $inc: {likes: 1}, 
@@ -30,13 +26,10 @@ async function updateStock(db, updateData, listOfIp) {
         return db.updateOne({stock: updateData.stock},
             { $set: {price: updateData.price}});
     }
-    
-    //return updateResult;
+
 }
 
 async function updateStockLike (db, data, ipList) {
-    console.log("Inside updateStockLike: " + JSON.stringify(data) + ' :' + ipList);
-    //let checkIP = ipList.find(elem => elem === data.ip);
     
     if(ipList === null || Object.keys(ipList).length === 0) {
         return db.updateOne({stock: data.stock},
@@ -44,13 +37,10 @@ async function updateStockLike (db, data, ipList) {
     }
     else {
         return 'No Update';
-        /*return db.updateOne({stock: data.stock},
-            { $inc: {likes: 0}});*/
     }
 }
 
 async function insertStock(db, data) {
-    //const {db, client} = await connectDB();
     if(data.likeVal) {
         return db.insertOne({
             stock: data.stock,
@@ -67,24 +57,19 @@ async function insertStock(db, data) {
             ip: []
         });
     }
-    //return insertStock;
 }
 
 async function findAndUpdateStock(db, stockData) {
     try {
-        console.log("Whats in stockData before find: " + JSON.stringify(stockData));
         let stockFindResult = await findStock(db, stockData);
-        console.log('Query finding stock in db: ' + JSON.stringify(stockFindResult));
         
         if(stockFindResult === null) {
             let insertStockData = await insertStock(db, stockData);
-            console.log('Query insert stock: ' + insertStockData);
             let findInsertedData = await findStock(db, stockData)
             return findInsertedData;
         }
         else {
             let updateStockData = await updateStock(db, stockData, [stockFindResult.ip]);
-            console.log('Query update Stock: ' + updateStockData);
             let findUpdatedData = await findStock(db, stockData);
             return findUpdatedData;
         }
@@ -97,7 +82,6 @@ async function findAndUpdateStock(db, stockData) {
 
 async function findTwoStocksAndCompare(db, twoStocks) {
     try {
-        console.log("Both stocks: " +JSON.stringify(twoStocks));
         let stock1FindResult = await findStock(db, twoStocks[0]);
         let stock2FindResult = await findStock(db, twoStocks[1]);
         
@@ -121,16 +105,13 @@ async function findTwoStocksAndCompare(db, twoStocks) {
             console.log("Increasing like for both stocks");
             let stockIP1 = stock1FindResult.ip;
             let stockIP2 = stock2FindResult.ip;
-            console.log('whats in stockIp1: ' + typeof(stockIP1) + ' stockIp2: ' + stockIP1);
-            let stock1Update = await updateStockLike(db, twoStocks[0], stockIP1);
-            console.log('Update contents: ' + JSON.stringify(stock1Update));
-            let stock2Update = await updateStockLike(db, twoStocks[1], stockIP2);
-            console.log('Update contents: ' + JSON.stringify(stock2Update));
 
+            let stock1Update = await updateStockLike(db, twoStocks[0], stockIP1);
+            let stock2Update = await updateStockLike(db, twoStocks[1], stockIP2);
 
             let find1Update = await findStock(db, twoStocks[0]);
             let find2Update = await findStock(db, twoStocks[1]);
-            console.log('Whats in findUpdate: ' + JSON.stringify(find1Update));
+
             return ([find1Update, find2Update]);
         }
         else {

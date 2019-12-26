@@ -1,7 +1,6 @@
 var fetch = require('node-fetch');
 
 const API_TOKEN = process.env.STOCK_TOKEN;
-//console.log(API_TOKEN);
 const STOCK_URL='https://cloud.iexapis.com/stable/stock/';
 
 async function fetchStockData(quoteUrl) {
@@ -11,12 +10,8 @@ async function fetchStockData(quoteUrl) {
         throw new Error(result.status);
     }
 
-    //let fetchStockData = JSON.stringify(result);
     let returnData = await result.json(); 
-    /*{
-        stock: result.symbol,
-        price: result.latestPrice
-    };*/
+
     return returnData;
 }
 
