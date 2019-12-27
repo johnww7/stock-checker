@@ -8,12 +8,13 @@ const project = "stockprice";
 
 var client;
 
-
+//Finds stock data in db by searching for stock symbol
 async function findStock(db, searchData) {
 
     return db.findOne({stock: searchData.stock},{_id: 0, stock: 1, price: 1, likes: 1, ip: 1});
 }
 
+//Updats stock data in db, by updating price, and ip and likes based on ip address.
 async function updateStock(db, updateData, listOfIp) {
     let findIp = listOfIp.find(elem => elem === updateData.ip);
 
@@ -29,6 +30,7 @@ async function updateStock(db, updateData, listOfIp) {
 
 }
 
+//Updates stock like when comparing two stocks.
 async function updateStockLike (db, data, ipList) {
     
     if(ipList === null || Object.keys(ipList).length === 0) {
@@ -40,6 +42,7 @@ async function updateStockLike (db, data, ipList) {
     }
 }
 
+//Inserts a new stock into db with either like being 1 or 0.
 async function insertStock(db, data) {
     if(data.likeVal) {
         return db.insertOne({
@@ -59,6 +62,7 @@ async function insertStock(db, data) {
     }
 }
 
+//Finds and updates 1 stock based on if stock is already in db or not. 
 async function findAndUpdateStock(db, stockData) {
     try {
         let stockFindResult = await findStock(db, stockData);
@@ -80,6 +84,8 @@ async function findAndUpdateStock(db, stockData) {
     }
 }
 
+//Finds and compares two stocks in db, and updates or inserts data based on if stock is null, like is true or
+//ip already exists in db
 async function findTwoStocksAndCompare(db, twoStocks) {
     try {
         let stock1FindResult = await findStock(db, twoStocks[0]);

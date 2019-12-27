@@ -21,7 +21,6 @@ const CONNECTION_STRING = process.env.CONNECTION_STRING; //MongoClient.connect(C
 
 
 const API_TOKEN = process.env.STOCK_TOKEN;
-//console.log(API_TOKEN);
 const STOCK_URL='https://cloud.iexapis.com/stable/stock/';
 const project = "stockprice";
 
@@ -44,6 +43,7 @@ module.exports = function (app) {
 
           var myStockPromise = () =>{
             return new Promise((resolve, reject) => {
+              //Tests for comparing 2 stocks and gets their relative likes
               if(stockSticker.length == 2 && typeof(stockSticker) === 'object') {
                 let stockQuoteUrl = STOCK_URL + stockSticker[0] + '/quote?token=' + API_TOKEN;
                 let stockQuoteUrl2 = STOCK_URL + stockSticker[1] + '/quote?token=' + API_TOKEN;
@@ -87,6 +87,7 @@ module.exports = function (app) {
                   reject(err);
                 });
               }
+              //Gets stock price and adds a like to stock if true. 
               else {
                 let stockQuoteUrl = STOCK_URL + stockSticker + '/quote?token=' + API_TOKEN;
 
